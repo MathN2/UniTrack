@@ -22,46 +22,44 @@ public class ArvoreBinaria {
     }
 
     private Node inserirRecursivo(Node atual, Aluno aluno) {
-        System.out.println(aluno.getNome() + " ta entrando.");
+
         if (atual == null) return new Node(aluno);
 
         if (atual.aluno.getNome().compareToIgnoreCase(aluno.getNome()) > 0) {
-            if (atual.esquerda != null) return atual.esquerda;
-            atual.esquerda = new Node(aluno);
+            if (atual.esquerda == null) {
+                atual.esquerda = new Node(aluno);
+                inserirRecursivo(atual.esquerda, aluno);
+            }
 
-            impressao();
-            return atual.esquerda;
+            inserirRecursivo(atual.esquerda, aluno);
         } 
+
         else if (atual.aluno.getNome().compareToIgnoreCase(aluno.getNome()) < 0) {
-            if (atual.direita != null) return atual.direita;
-            atual.direita = new Node(aluno);
+            if (atual.direita == null){
+                atual.direita = new Node(aluno);
+                inserirRecursivo(atual.direita, aluno);
+            }
 
-            impressao();
-            return atual.direita;
-        }
-        return atual;
-    }
-
-    private void impressao(){
-        System.out.println("Atual: " + raiz.aluno.getNome());
-        if (raiz.esquerda != null) {
-            System.out.println("Esquerda: " + raiz.esquerda.aluno.getNome());
-        } else {
-            System.out.println("Esquerda: null");
+            inserirRecursivo(atual.direita, aluno);
         }
 
-        if (raiz.direita != null) {
-            System.out.println("Direita: " + raiz.direita.aluno.getNome());
-        } else {
-            System.out.println("Direita: null");
-        }
-        System.out.println("");
+        return raiz;
     }
 
-    public String getRaiz(){
-        return raiz.aluno.getNome();
+
+    public void imprimirArvore(){
+        imprimirArvore(raiz, 0);
     }
-    
+    public void imprimirArvore(Node atual, int nivel){
+        if (atual == null) {
+            return;
+        }
+        imprimirArvore(atual.direita, nivel + 1);
+
+        System.out.println("  ".repeat(nivel) + atual.aluno.getNome());
+
+        imprimirArvore(atual.esquerda, nivel + 1);
+    }
 
         /*
         "João" "Maria" "Ana" "Bruno" "Pedro"
