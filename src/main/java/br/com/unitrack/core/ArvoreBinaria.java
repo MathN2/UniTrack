@@ -46,6 +46,28 @@ public class ArvoreBinaria {
         return raiz;
     }
 
+    public Aluno buscarPorNome(String nome){
+        if (nome == null) return null;
+
+        Aluno encontrado = buscarPorNomeRecursivo(raiz, nome);
+        return encontrado;
+    }
+    public Aluno buscarPorNomeRecursivo(Node atual, String nome){
+        if (atual == null) return null;
+        
+        if (atual.aluno.getNome().compareToIgnoreCase(nome) > 0){
+            return buscarPorNomeRecursivo(atual.esquerda, nome);
+        }
+        else if(atual.aluno.getNome().compareToIgnoreCase(nome) < 0){
+            return buscarPorNomeRecursivo(atual.direita, nome);
+        }
+        else if (atual.aluno.getNome().compareToIgnoreCase(nome) == 0){
+            return atual.aluno;
+        }
+
+        return null;
+    }
+
 
     public void imprimirArvore(){
         imprimirArvore(raiz, 0);
