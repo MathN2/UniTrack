@@ -3,7 +3,7 @@ package br.com.unitrack.model;
 public class Aluno {
     private String matricula, nome;
 
-    Aluno(String matricula, String nome) {
+    public Aluno(String matricula, String nome) {
         this.matricula = matricula;
         this.nome = nome;
     }
