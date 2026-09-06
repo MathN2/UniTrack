@@ -18,48 +18,48 @@ public class ArvoreBinaria {
     Node raiz;
 
     public void inserirAluno(Aluno aluno) {
-        raiz = inserirRecursivo(raiz, aluno);
+        if (buscarPorNome(aluno.getNome()) == null){
+            raiz = inserirAluno(raiz, aluno);
+        }
     }
 
-    private Node inserirRecursivo(Node atual, Aluno aluno) {
-
+    private Node inserirAluno(Node atual, Aluno aluno) {
         if (atual == null) return new Node(aluno);
 
         if (atual.aluno.getNome().compareToIgnoreCase(aluno.getNome()) > 0) {
             if (atual.esquerda == null) {
                 atual.esquerda = new Node(aluno);
-                inserirRecursivo(atual.esquerda, aluno);
+                // inserirAluno(atual.esquerda, aluno);
             }
 
-            inserirRecursivo(atual.esquerda, aluno);
+            inserirAluno(atual.esquerda, aluno);
         } 
 
         else if (atual.aluno.getNome().compareToIgnoreCase(aluno.getNome()) < 0) {
             if (atual.direita == null){
                 atual.direita = new Node(aluno);
-                inserirRecursivo(atual.direita, aluno);
+                // inserirAluno(atual.direita, aluno);
             }
-
-            inserirRecursivo(atual.direita, aluno);
+            inserirAluno(atual.direita, aluno);
         }
-
-        return raiz;
+        return atual;
     }
+
 
     public Aluno buscarPorNome(String nome){
         if (nome == null) return null;
 
-        Aluno encontrado = buscarPorNomeRecursivo(raiz, nome);
+        Aluno encontrado = buscarPorNome(raiz, nome);
         return encontrado;
     }
-    public Aluno buscarPorNomeRecursivo(Node atual, String nome){
+    private Aluno buscarPorNome(Node atual, String nome){
         if (atual == null) return null;
         
         if (atual.aluno.getNome().compareToIgnoreCase(nome) > 0){
-            return buscarPorNomeRecursivo(atual.esquerda, nome);
+            return buscarPorNome(atual.esquerda, nome);
         }
         else if(atual.aluno.getNome().compareToIgnoreCase(nome) < 0){
-            return buscarPorNomeRecursivo(atual.direita, nome);
+            return buscarPorNome(atual.direita, nome);
         }
         else if (atual.aluno.getNome().compareToIgnoreCase(nome) == 0){
             return atual.aluno;
@@ -69,18 +69,40 @@ public class ArvoreBinaria {
     }
 
 
+    public Aluno buscarPorMatricula(String matricula) {
+        Aluno aluno = buscarPorMatricula(raiz, matricula);
+        return aluno;
+    }
+    private Aluno buscarPorMatricula(Node atual, String matricula) {
+        if (atual == null) return null;
+        if (atual.aluno.getMatricula().equals(matricula)) return atual.aluno;
+
+        Aluno aluno = buscarPorMatricula(atual.esquerda, matricula);
+        if (aluno != null) return aluno;
+        
+        aluno = buscarPorMatricula(atual.direita, matricula);
+        if (aluno != null) return aluno;
+
+        return null;
+    }
+
+    public void removerAluno(String aluno){
+
+    }
+
+
     public void imprimirArvore(){
         imprimirArvore(raiz, 0);
     }
-    public void imprimirArvore(Node atual, int nivel){
+    private void imprimirArvore(Node atual, int nivel){
         if (atual == null) {
             return;
         }
-        imprimirArvore(atual.direita, nivel + 1);
-
-        System.out.println("  ".repeat(nivel) + atual.aluno.getNome());
-
         imprimirArvore(atual.esquerda, nivel + 1);
+        
+        System.out.println("  ".repeat(nivel) + atual.aluno.getNome());
+        
+        imprimirArvore(atual.direita, nivel + 1);
     }
 
         /*
