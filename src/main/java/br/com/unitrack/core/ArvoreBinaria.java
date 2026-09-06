@@ -22,27 +22,20 @@ public class ArvoreBinaria {
             raiz = inserirAluno(raiz, aluno);
         }
     }
+private Node inserirAluno(Node atual, Aluno aluno) {
 
-    private Node inserirAluno(Node atual, Aluno aluno) {
-        if (atual == null) return new Node(aluno);
+    if (atual == null) {
+        return new Node(aluno);
+    }
 
-        if (atual.aluno.getNome().compareToIgnoreCase(aluno.getNome()) > 0) {
-            if (atual.esquerda == null) {
-                atual.esquerda = new Node(aluno);
-                // inserirAluno(atual.esquerda, aluno);
-            }
+    if (aluno.getNome().compareToIgnoreCase(atual.aluno.getNome()) < 0) {
+        atual.esquerda = inserirAluno(atual.esquerda, aluno);
+    } 
+    else if (aluno.getNome().compareToIgnoreCase(atual.aluno.getNome()) > 0) {
+        atual.direita = inserirAluno(atual.direita, aluno);
+    }
 
-            inserirAluno(atual.esquerda, aluno);
-        } 
-
-        else if (atual.aluno.getNome().compareToIgnoreCase(aluno.getNome()) < 0) {
-            if (atual.direita == null){
-                atual.direita = new Node(aluno);
-                // inserirAluno(atual.direita, aluno);
-            }
-            inserirAluno(atual.direita, aluno);
-        }
-        return atual;
+    return atual;
     }
 
 
@@ -86,9 +79,6 @@ public class ArvoreBinaria {
         return null;
     }
 
-    public void removerAluno(String aluno){
-
-    }
 
     public void imprimirArvore(){
         System.out.println("╔Lista de Alunos" + "═".repeat(19) + "╗");
