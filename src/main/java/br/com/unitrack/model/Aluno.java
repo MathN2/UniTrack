@@ -23,4 +23,11 @@ public class Aluno {
     public void setNome(String nome) {
         this.nome = nome;
     }
+
+    public void exibirInfo(){
+        System.out.println("-".repeat(30));
+        System.out.println("Nome: " + nome);
+        System.out.println("Matricula: " + matricula);
+        System.out.println("-".repeat(30));
+    }
 }
