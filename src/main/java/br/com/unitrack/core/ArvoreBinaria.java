@@ -90,30 +90,21 @@ public class ArvoreBinaria {
 
     }
 
-
     public void imprimirArvore(){
-        imprimirArvore(raiz, 0);
+        System.out.println("╔Lista de Alunos" + "═".repeat(19) + "╗");
+        System.out.printf("║ %-20s │ %-10s║%n", "Nome", "Matrícula");
+        System.out.println("║" + "─".repeat(34) + "║");
+        imprimirArvore(raiz);
+        System.out.println("╚" + "═".repeat(34) + "╝");
     }
-    private void imprimirArvore(Node atual, int nivel){
+    private void imprimirArvore(Node atual){
         if (atual == null) {
             return;
         }
-        imprimirArvore(atual.esquerda, nivel + 1);
+        imprimirArvore(atual.esquerda);
         
-        System.out.println("  ".repeat(nivel) + atual.aluno.getNome());
+        atual.aluno.exibirInfo();
         
-        imprimirArvore(atual.direita, nivel + 1);
+        imprimirArvore(atual.direita);
     }
-
-        /*
-        "João" "Maria" "Ana" "Bruno" "Pedro"
-
-        Joao
-        /  \
-      Ana  Maria
-        \    \
-      Bruno  Pedro
-
-        */
-    
 }

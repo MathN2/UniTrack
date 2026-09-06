@@ -25,9 +25,6 @@ public class Aluno {
     }
 
     public void exibirInfo(){
-        System.out.println("-".repeat(30));
-        System.out.println("Nome: " + nome);
-        System.out.println("Matricula: " + matricula);
-        System.out.println("-".repeat(30));
+        System.out.printf("║ %-20s │ %-10s║%n", nome, matricula);
     }
 }
