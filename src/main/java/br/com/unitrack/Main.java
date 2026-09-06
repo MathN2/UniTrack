@@ -1,9 +1,10 @@
+
 package br.com.unitrack;
 
 import javax.swing.SwingUtilities;
 
 import br.com.unitrack.View.TelaPrincipal;
-import br.com.unitrack.core.ArvoreBinaria;
+import br.com.unitrack.controller.ArvoreBinariaController;
 
 public class Main {
 
@@ -11,9 +12,10 @@ public class Main {
 
         SwingUtilities.invokeLater(() -> {
 
-            ArvoreBinaria arvore = new ArvoreBinaria();
+            ArvoreBinariaController controller =
+                    new ArvoreBinariaController();
 
-            TelaPrincipal tela = new TelaPrincipal(arvore);
+            TelaPrincipal tela = new TelaPrincipal(controller);
 
             tela.setVisible(true);
         });

@@ -5,6 +5,7 @@ import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -13,21 +14,21 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import br.com.unitrack.core.ArvoreBinaria;
+import br.com.unitrack.controller.ArvoreBinariaController;
 import br.com.unitrack.model.Aluno;
 
 public class TelaPrincipal extends JFrame {
 
-    private final ArvoreBinaria arvore;
+    private final ArvoreBinariaController controller;
 
     private JTextField campoMatricula;
     private JTextField campoNome;
-
+    private JComboBox<String> campoCampus;
     private JTextArea areaResultado;
 
-    public TelaPrincipal(ArvoreBinaria arvore) {
+    public TelaPrincipal(ArvoreBinariaController controller) {
 
-        this.arvore = arvore;
+        this.controller = controller;
 
         configurarJanela();
         criarComponentes();
@@ -46,13 +47,29 @@ public class TelaPrincipal extends JFrame {
         JPanel painelPrincipal = new JPanel();
         painelPrincipal.setLayout(new BorderLayout(10, 10));
 
-        JPanel painelCadastro = new JPanel(new GridLayout(3, 2, 10, 10));
+        JPanel painelCadastro = new JPanel(
+                new GridLayout(4, 2, 10, 10)
+        );
 
         JLabel labelMatricula = new JLabel("Matrícula:");
         campoMatricula = new JTextField();
 
         JLabel labelNome = new JLabel("Nome:");
         campoNome = new JTextField();
+
+        JLabel labelCampus = new JLabel("Campus:");
+
+        String[] campi = {
+                "Anália Franco",
+                "Guarulhos",
+                "Liberdade",
+                "Paulista",
+                "São Miguel",
+                "Santo Amaro",
+                "Villa Lobos"
+        };
+
+        campoCampus = new JComboBox<>(campi);
 
         JButton botaoCadastrar = new JButton("Cadastrar");
 
@@ -61,6 +78,9 @@ public class TelaPrincipal extends JFrame {
 
         painelCadastro.add(labelNome);
         painelCadastro.add(campoNome);
+
+        painelCadastro.add(labelCampus);
+        painelCadastro.add(campoCampus);
 
         painelCadastro.add(new JLabel());
         painelCadastro.add(botaoCadastrar);
@@ -74,18 +94,29 @@ public class TelaPrincipal extends JFrame {
                 BorderFactory.createEmptyBorder(15, 15, 15, 15)
         );
 
-        painelPrincipal.add(painelCadastro, BorderLayout.NORTH);
-        painelPrincipal.add(scroll, BorderLayout.CENTER);
+        painelPrincipal.add(
+                painelCadastro,
+                BorderLayout.NORTH
+        );
+
+        painelPrincipal.add(
+                scroll,
+                BorderLayout.CENTER
+        );
 
         add(painelPrincipal);
 
-        botaoCadastrar.addActionListener(e -> cadastrarAluno());
+        botaoCadastrar.addActionListener(
+                e -> cadastrarAluno()
+        );
     }
 
     private void cadastrarAluno() {
 
         String matricula = campoMatricula.getText().trim();
         String nome = campoNome.getText().trim();
+
+        int campus = campoCampus.getSelectedIndex();
 
         if (matricula.isEmpty() || nome.isEmpty()) {
 
@@ -97,17 +128,9 @@ public class TelaPrincipal extends JFrame {
             return;
         }
 
-        if (arvore.buscarPorMatricula(matricula) != null) {
+        Aluno aluno = new Aluno(matricula, nome);
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Já existe um aluno com essa matrícula."
-            );
-
-            return;
-        }
-
-        if (arvore.buscarPorNome(nome) != null) {
+        if (controller.localizarAluno(nome) != null) {
 
             JOptionPane.showMessageDialog(
                     this,
@@ -117,15 +140,26 @@ public class TelaPrincipal extends JFrame {
             return;
         }
 
-        Aluno aluno = new Aluno(matricula, nome);
+        if (!controller.cadastrarAluno(aluno, campus)) {
 
-        arvore.inserirAluno(aluno);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Não foi possível cadastrar o aluno."
+            );
+
+            return;
+        }
+
+        String nomeCampus =
+                campoCampus.getSelectedItem().toString();
 
         areaResultado.append(
                 "Aluno cadastrado: " +
                 nome +
                 " | Matrícula: " +
                 matricula +
+                " | Campus: " +
+                nomeCampus +
                 "\n"
         );
 
@@ -138,3 +172,4 @@ public class TelaPrincipal extends JFrame {
         );
     }
 }
+
