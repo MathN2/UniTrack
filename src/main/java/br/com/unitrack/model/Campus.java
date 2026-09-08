@@ -1,5 +1,7 @@
 package br.com.unitrack.model;
 
+import java.util.List;
+
 import br.com.unitrack.core.ArvoreBinaria;
 
 public class Campus {
@@ -25,5 +27,9 @@ public class Campus {
 
     public Aluno buscarAlunoPorNome(String nome) {
         return arvoreAlunos.buscarPorNome(nome);
+    }
+
+    public List<Aluno> listarAlunos(){
+        return arvoreAlunos.listarAlunos();
     }
 }

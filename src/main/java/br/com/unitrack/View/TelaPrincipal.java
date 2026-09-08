@@ -1,175 +1,254 @@
-package br.com.unitrack.View;
+package br.com.unitrack.view;
 
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import java.util.List;
 
 import br.com.unitrack.controller.ArvoreBinariaController;
 import br.com.unitrack.model.Aluno;
+import br.com.unitrack.model.Campus;
 
-public class TelaPrincipal extends JFrame {
+import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-    private final ArvoreBinariaController controller;
+public class TelaPrincipal extends Application {
 
-    private JTextField campoMatricula;
-    private JTextField campoNome;
-    private JComboBox<String> campoCampus;
-    private JTextArea areaResultado;
+    private final ArvoreBinariaController controller =
+            new ArvoreBinariaController();
 
-    public TelaPrincipal(ArvoreBinariaController controller) {
+    private Scene scene;
 
-        this.controller = controller;
+    @Override
+    public void start(Stage stage) {
 
-        configurarJanela();
-        criarComponentes();
+        scene = new Scene(criarTelaPrincipal(), 800, 600);
+
+        stage.setTitle("UniTrack");
+        stage.setScene(scene);
+        stage.show();
     }
 
-    private void configurarJanela() {
+    private VBox criarTelaPrincipal() {
 
-        setTitle("UniTrack - Cadastro de Alunos");
-        setSize(600, 450);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-    }
+        VBox layout = new VBox(20);
+        layout.setAlignment(Pos.CENTER);
 
-    private void criarComponentes() {
+        Label titulo = new Label("UniTrack");
 
-        JPanel painelPrincipal = new JPanel();
-        painelPrincipal.setLayout(new BorderLayout(10, 10));
+        Button cadastrar = new Button("Cadastrar Aluno");
+        Button listar = new Button("Listar Alunos");
+        Button localizar = new Button("Localizar Aluno");
 
-        JPanel painelCadastro = new JPanel(
-                new GridLayout(4, 2, 10, 10)
+        cadastrar.setOnAction(e ->
+            scene.setRoot(criarTelaCadastro())
         );
 
-        JLabel labelMatricula = new JLabel("Matrícula:");
-        campoMatricula = new JTextField();
+        listar.setOnAction(e ->
+            scene.setRoot(criarTelaLista())
+        );
 
-        JLabel labelNome = new JLabel("Nome:");
-        campoNome = new JTextField();
+        localizar.setOnAction(e ->
+            scene.setRoot(criarTelaLocalizar())
+        );
 
-        JLabel labelCampus = new JLabel("Campus:");
+        layout.getChildren().addAll(
+            titulo,
+            cadastrar,
+            listar,
+            localizar
+        );
+
+        return layout;
+    }
+
+    private VBox criarTelaCadastro() {
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+
+        Label titulo = new Label("Cadastrar Aluno");
+
+        TextField campoNome = new TextField();
+        campoNome.setPromptText("Nome");
+
+        TextField campoMatricula = new TextField();
+        campoMatricula.setPromptText("Matrícula");
 
         String[] campi = {
-                "Anália Franco",
-                "Guarulhos",
-                "Liberdade",
-                "Paulista",
-                "São Miguel",
-                "Santo Amaro",
-                "Villa Lobos"
+            "Anália Franco",
+            "Guarulhos",
+            "Liberdade",
+            "Paulista",
+            "São Miguel",
+            "Santo Amaro",
+            "Villa Lobos"
         };
 
-        campoCampus = new JComboBox<>(campi);
+        ComboBox<String> campoCampus = new ComboBox<>();
+        campoCampus.getItems().addAll(campi);
+        campoCampus.getSelectionModel().selectFirst();
 
-        JButton botaoCadastrar = new JButton("Cadastrar");
+        Button cadastrar = new Button("Cadastrar");
+        Button voltar = new Button("Voltar");
 
-        painelCadastro.add(labelMatricula);
-        painelCadastro.add(campoMatricula);
+        Label resultado = new Label();
 
-        painelCadastro.add(labelNome);
-        painelCadastro.add(campoNome);
+        cadastrar.setOnAction(e -> {
 
-        painelCadastro.add(labelCampus);
-        painelCadastro.add(campoCampus);
+            String nome = campoNome.getText().trim();
+            String matricula = campoMatricula.getText().trim();
 
-        painelCadastro.add(new JLabel());
-        painelCadastro.add(botaoCadastrar);
+            int campus = campoCampus.getSelectionModel().getSelectedIndex();
 
-        areaResultado = new JTextArea();
-        areaResultado.setEditable(false);
+            if (nome.isEmpty() || matricula.isEmpty()) {
+                resultado.setText("Preencha todos os campos.");
+                return;
+            }
 
-        JScrollPane scroll = new JScrollPane(areaResultado);
+            Aluno aluno = new Aluno(matricula, nome);
 
-        painelPrincipal.setBorder(
-                BorderFactory.createEmptyBorder(15, 15, 15, 15)
+            if (controller.cadastrarAluno(aluno, campus)) {
+                resultado.setText("Aluno cadastrado com sucesso!");
+
+                campoNome.clear();
+                campoMatricula.clear();
+
+            } else {
+                resultado.setText("Já existe um aluno com esse nome.");
+            }
+        });
+
+        voltar.setOnAction(e ->
+            scene.setRoot(criarTelaPrincipal())
         );
 
-        painelPrincipal.add(
-                painelCadastro,
-                BorderLayout.NORTH
+        layout.getChildren().addAll(
+            titulo,
+            campoNome,
+            campoMatricula,
+            campoCampus,
+            cadastrar,
+            resultado,
+            voltar
         );
 
-        painelPrincipal.add(
-                scroll,
-                BorderLayout.CENTER
-        );
-
-        add(painelPrincipal);
-
-        botaoCadastrar.addActionListener(
-                e -> cadastrarAluno()
-        );
+        return layout;
     }
 
-    private void cadastrarAluno() {
+    private VBox criarTelaLista() {
 
-        String matricula = campoMatricula.getText().trim();
-        String nome = campoNome.getText().trim();
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
 
-        int campus = campoCampus.getSelectedIndex();
+        Label titulo = new Label("Listar Alunos");
 
-        if (matricula.isEmpty() || nome.isEmpty()) {
+        ComboBox<String> campoCampus = new ComboBox<>();
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Preencha matrícula e nome."
+        for (int i = 0; i < 7; i++) {
+            campoCampus.getItems().add(
+                controller.getCampus(i).getNome()
             );
-
-            return;
         }
 
-        Aluno aluno = new Aluno(matricula, nome);
+        campoCampus.getSelectionModel().selectFirst();
 
-        if (controller.localizarAluno(nome) != null) {
+        TextArea resultado = new TextArea();
+        resultado.setEditable(false);
 
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Já existe um aluno com esse nome."
+        Button listar = new Button("Listar");
+        Button voltar = new Button("Voltar");
+
+        listar.setOnAction(e -> {
+
+            int indice = campoCampus.getSelectionModel().getSelectedIndex();
+
+            Campus campus = controller.getCampus(indice);
+            List<Aluno> alunos = campus.listarAlunos();
+
+            resultado.clear();
+
+            resultado.setText(
+                "Alunos do campus: " +
+                campoCampus.getValue()  + "\n"
             );
 
-            return;
-        }
+            for (Aluno aluno : alunos) {
+                resultado.appendText(
+                    aluno.getNome() + " | " + aluno.getMatricula() + "\n"
+                );
+            }
+        });
 
-        if (!controller.cadastrarAluno(aluno, campus)) {
-
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Não foi possível cadastrar o aluno."
-            );
-
-            return;
-        }
-
-        String nomeCampus =
-                campoCampus.getSelectedItem().toString();
-
-        areaResultado.append(
-                "Aluno cadastrado: " +
-                nome +
-                " | Matrícula: " +
-                matricula +
-                " | Campus: " +
-                nomeCampus +
-                "\n"
+        voltar.setOnAction(e ->
+            scene.setRoot(criarTelaPrincipal())
         );
 
-        campoMatricula.setText("");
-        campoNome.setText("");
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Aluno cadastrado com sucesso!"
+        layout.getChildren().addAll(
+            titulo,
+            campoCampus,
+            listar,
+            resultado,
+            voltar
         );
+
+        return layout;
+    }
+
+    private VBox criarTelaLocalizar() {
+
+        VBox layout = new VBox(10);
+        layout.setAlignment(Pos.CENTER);
+
+        Label titulo = new Label("Localizar Aluno");
+
+        TextField campoNome = new TextField();
+        campoNome.setPromptText("Nome do aluno");
+
+        Button buscar = new Button("Buscar");
+        Button voltar = new Button("Voltar");
+
+        TextArea resultado = new TextArea();
+        resultado.setEditable(false);
+
+        buscar.setOnAction(e -> {
+
+            String nome = campoNome.getText().trim();
+
+            if (nome.isEmpty()) {
+                resultado.setText("Digite um nome.");
+                return;
+            }
+
+            Aluno aluno = controller.localizarAluno(nome);
+            Campus campus = controller.localizarCampus(nome);
+
+            if (aluno == null) {
+                resultado.setText("Aluno não encontrado.");
+                return;
+            }
+
+            resultado.setText(
+                "Aluno encontrado!\n\n" +
+                "Nome: " + aluno.getNome() + "\n" +
+                "Matrícula: " + aluno.getMatricula() + "\n" +
+                "Campus: " + campus.getNome()
+            );
+        });
+
+        voltar.setOnAction(e ->
+            scene.setRoot(criarTelaPrincipal())
+        );
+
+        layout.getChildren().addAll(
+            titulo,
+            campoNome,
+            buscar,
+            resultado,
+            voltar
+        );
+
+        return layout;
     }
 }
-

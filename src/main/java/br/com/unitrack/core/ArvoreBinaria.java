@@ -1,5 +1,8 @@
 package br.com.unitrack.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.unitrack.model.Aluno;
 
 public class ArvoreBinaria {
@@ -79,6 +82,23 @@ private Node inserirAluno(Node atual, Aluno aluno) {
         return null;
     }
 
+
+    public List<Aluno> listarAlunos(){
+        List<Aluno> lista = new ArrayList<>();
+        return listarAlunos(raiz, lista);
+    }
+    private List<Aluno> listarAlunos(Node atual, List<Aluno> lista){
+        if (atual == null) {
+            return lista;
+        }
+        listarAlunos(atual.esquerda, lista);
+        
+        lista.add(atual.aluno);        
+
+        listarAlunos(atual.direita, lista);
+
+        return lista;
+    }
 
     public void imprimirArvore(){
         System.out.println("╔Lista de Alunos" + "═".repeat(19) + "╗");

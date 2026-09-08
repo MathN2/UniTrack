@@ -42,6 +42,16 @@ public class ArvoreBinariaController {
         return null;
     }
 
+    public Campus localizarCampus(String nome) {
+        for (Campus campus : campi) {
+            if (campus.buscarAlunoPorNome(nome) != null) {
+                return campus;
+            }
+        }
+
+        return null;
+    }
+
     public Campus getCampus(int campus) {
         return campi[campus];
     }
