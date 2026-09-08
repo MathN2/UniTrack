@@ -7,7 +7,7 @@ Universidade Cruzeiro do Sul.
 
 - Java
 - SpringBoot
-- Swing
+- JavaFX
 - Estrutura de Dados
 - Árvore de Busca
 
